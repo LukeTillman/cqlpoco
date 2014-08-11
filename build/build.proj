@@ -1,0 +1,90 @@
+<Project DefaultTargets="compile" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Add some tasks from MSBuild Community Tasks project -->
+  <UsingTask AssemblyFile="$(MSBuildCommunityTasksLib)" TaskName="MSBuild.Community.Tasks.Git.GitVersion" />
+  <UsingTask AssemblyFile="$(MSBuildCommunityTasksLib)" TaskName="MSBuild.Community.Tasks.AssemblyInfo" />
+    
+  <PropertyGroup>
+    <!-- Define some base paths -->
+    <BaseFolder>..</BaseFolder>
+    <SourceFolder>$(BaseFolder)\src</SourceFolder>
+    <ToolsFolder>$(BaseFolder)\tools</ToolsFolder>
+    <BuildFolder>$(BaseFolder)\build</BuildFolder>
+
+    <!-- Paths for build output -->
+    <TestResultsFolder>$(BuildFolder)\testresults</TestResultsFolder>
+    <PackagesFolder>$(BuildFolder)\packages</PackagesFolder>
+
+    <!-- Specific Tools -->
+    <NuGet>$(SourceFolder)\.nuget\nuget.exe</NuGet>
+    <MSBuildCommunityTasksLib>$(ToolsFolder)\MSBuildTasks.1.4.0.65\MSBuild.Community.Tasks.dll</MSBuildCommunityTasksLib>
+    <NUnit>$(SourceFolder)\packages\NUnit.Runners.2.6.3\tools\nunit-console.exe</NUnit>
+  
+    <!-- Version information -->
+    <Version>1.0.0</Version>
+    <SharedAssemblyInfo>$(SourceFolder)\SharedAssemblyInfo.cs</SharedAssemblyInfo>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <!-- Projects to Build -->
+    <AllProjects Include="$(SourceFolder)\CqlPoco.sln" />
+  
+    <!-- NuGet spec files which will be used to create packages -->
+    <NuSpecFiles Include="$(BuildFolder)\*.nuspec" /> 
+  </ItemGroup>
+  <!-- Cleans output folders, projects -->
+  <Target Name="clean">
+    <Message Text="Cleaning build output folders" Importance="high" />
+    <RemoveDir Directories="$(TestResultsFolder)" ContinueOnError="true" />
+    <RemoveDir Directories="$(PackagesFolder)" ContinueOnError="true" />
+  
+    <Message Text="Cleaning projects" Importance="high" />
+    <MSBuild Projects="@(AllProjects)" Targets="clean" StopOnFirstFailure="true" Properties="Configuration=Release" />
+  </Target>
+
+  <!-- Compiles code -->
+  <Target Name="compile" DependsOnTargets="clean">
+    <Message Text="Compiling projects" Importance="high" />
+    <MSBuild Projects="@(AllProjects)" Targets="build" StopOnFirstFailure="true" Properties="Configuration=Release" />
+  </Target>
+
+  <!-- Creates nuget package(s) -->
+  <Target Name="package" DependsOnTargets="generate-assembly-info;test">
+    <Message Text="Creating NuGet package(s)" Importance="high" />
+    <MakeDir Directories="$(PackagesFolder)" />
+    <Exec Command="$(NuGet) pack &quot;%(NuSpecFiles.FullPath)&quot; -basepath $(SourceFolder) -o $(PackagesFolder) -version $(Version)" />
+  </Target>
+
+  <!-- Runs integration tests-->
+  <Target Name="test" DependsOnTargets="compile">
+    <Message Text="Running integration tests" Importance="high" />
+    <MakeDir Directories="$(TestResultsFolder)" />
+    <Exec Command="$(NUnit) &quot;$(SourceFolder)\CqlPoco.IntegrationTests\bin\Release\CqlPoco.IntegrationTests.dll&quot; /labels /nologo /framework:net-4.5 /xml:&quot;$(TestResultsFolder)\TestResults.xml&quot; /out=&quot;$(TestResultsFolder)\TestResults.txt&quot;" />
+  </Target>
+
+  <!-- Creates a shared assembly info file so that all assemblies get some common attributes (like version number) -->
+  <Target Name="generate-assembly-info">
+    <Message Text="Creating assembly info" Importance="high" />
+    
+    <PropertyGroup>
+      <GitHash />
+    </PropertyGroup>
+    
+    <!-- Get the Git commit hash and put it into the GitHash property -->
+    <GitVersion LocalPath="$(MSBuildProjectDirectory)">
+      <Output TaskParameter="CommitHash" PropertyName="GitHash" />
+    </GitVersion>
+    
+    <!-- Generate the shared assembly info file -->
+    <AssemblyInfo 
+      OutputFile="$(SharedAssemblyInfo)" 
+      CodeLanguage ="CS"
+      AssemblyCompany="" 
+      AssemblyProduct="CqlPoco" 
+      ComVisible="false"
+      AssemblyCopyright=""
+      AssemblyVersion="$(Version)" 
+      AssemblyInformationalVersion="$(Version) (git $(GitHash))"
+      AssemblyFileVersion="$(Version)" />
+  </Target>
+
+</Project>

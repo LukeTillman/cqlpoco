@@ -68,6 +68,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Assertions\AssertionExtensions.cs" />
     <Compile Include="Assertions\CassandraDateTimeEquality.cs" />
     <Compile Include="Assertions\CassandraDateTimeOffsetEquality.cs" />

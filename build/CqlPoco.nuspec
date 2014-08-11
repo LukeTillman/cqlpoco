@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>CqlPoco</id>
+    <!-- It will be overridden by the nuget command if -version is specified -->
+    <version>1.0.0</version>
+    <title>CqlPoco</title>
+    <authors>Luke Tillman</authors>
+    <owners>Luke Tillman</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/LukeTillman/cqlpoco</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A Micro-ORM for Apache Cassandra.</description>
+    <summary>A Micro-ORM for Apache Cassandra</summary>
+    <tags>cassandra apache cql orm micro-orm database nosql</tags>
+    <dependencies>
+      <dependency id="CassandraCSharpDriver" version="2.0.3" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="CqlPoco\bin\Release\CqlPoco.dll" target="lib\net45"/>
+    <file src="CqlPoco\bin\Release\CqlPoco.pdb" target="lib\net45"/>
+    <file src="CqlPoco\bin\Release\CqlPoco.xml" target="lib\net45"/>
+  </files>
+</package>
