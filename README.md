@@ -1,4 +1,13 @@
 # CqlPoco - an object mapper (micro-ORM) for Cassandra
+
+### UPDATE: CqlPoco is now part of the DataStax .NET Driver for Apache Cassandra
+I'm really excited that CqlPoco has now been pulled back into the [DataStax .NET driver](https://github.com/datastax/csharp-driver) for Apache Cassandra as the official Mapper component.  The API has remained mostly intact, so it should be relatively simple to transition any existing code.  For more details on the Mapper which is new in v2.5 of the DataStax driver, have a look at:
+- The DataStax [Dev Blog Post](http://www.datastax.com/dev/blog/csharp-driver-cassandra-new-mapper-linq-improvements) on v2.5
+- The [official documentation](http://www.datastax.com/documentation/developer/csharp-driver/2.5/csharp-driver/reference/mapperComponent.html) for the Mapper component
+
+The code and this project will remain here for historical purposes, however going forward, you should use the Mapper in the driver as it will continue to be updated, improved, and supported there.  Thanks to [Jorge Bay Gondra](https://twitter.com/jorgebg) for all his great work integrating CqlPoco with the driver.
+
+### Original Readme
 CqlPoco is a lightweight object mapper (micro-ORM) for Apache Cassandra.  You write queries with [CQL](http://www.datastax.com/documentation/cql/3.1/cql/cql_intro_c.html), and CqlPoco will take care of mapping rows returned from Cassandra to your classes.  It was inspired by [PetaPoco](https://github.com/toptensoftware/PetaPoco), [NPoco](https://github.com/schotime/NPoco), [Dapper.NET](https://github.com/StackExchange/dapper-dot-net) and the [cqlengine](https://github.com/cqlengine/cqlengine) project.
 
 ### A simple query
